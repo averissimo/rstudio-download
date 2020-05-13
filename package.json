@@ -1,0 +1,37 @@
+{
+  "name": "download-rstudio",
+  "version": "1.0.0",
+  "description": "downloads rstudio preview",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "André Veríssimo",
+  "license": "GPL-3.0-or-later",
+  "dependencies": {
+    "bent": "^7.3.1",
+    "cheerio": "^1.0.0-rc.3",
+    "loglevel": "^1.6.6"
+  },
+  "xo": {
+    "space": true,
+    "rules": {
+      "capitalized-comments": "off"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/averissimo/rstudio-download"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "node": true,
+      "es6": true
+    }
+  },
+  "jshintConfig": {
+    "esversion": 6
+  }
+}
