@@ -1,6 +1,6 @@
 ## RStudio downloader
 
-> download and install rstudio preview
+> download and install latest rstudio preview
 
 ## Instructions
 
