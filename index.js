@@ -8,7 +8,7 @@ const execSync = require('child_process').execSync
 
 log.setLevel('info')
 
-download_url = "https://rstudio.com/products/rstudio/download/preview/"
+download_url = "https://www.rstudio.com/products/rstudio/download/preview/"
 
 const get = bent('GET', 200);
 const down = bent('GET', 'buffer', 200);
