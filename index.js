@@ -23,7 +23,7 @@ async function connect()  {
   let tables = $('.download-table span')
   
   // Keep only the first row that mentions Ubuntu
-  tables = tables.filter((ix, el) => /Ubuntu 18\+/.test($(el).html())).first()
+  tables = tables.filter((ix, el) => /Ubuntu 22/.test($(el).html())).first()
   
   // Get the links under that table row
   const links = $(tables.eq(0).next())
