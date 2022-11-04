@@ -6,9 +6,10 @@ const path = require('path')
 const log = require('loglevel')
 const execSync = require('child_process').execSync
 
-log.setLevel('info')
+log.setLevel('debug')
 
-download_url = "https://www.rstudio.com/products/rstudio/download/preview/"
+// download_url = "https://www.rstudio.com/products/rstudio/download/preview/"
+download_url = "https://posit.co/download/rstudio-desktop/"
 
 const get = bent('GET', 200);
 const down = bent('GET', 'buffer', 200);
@@ -18,22 +19,28 @@ async function connect()  {
   const body = await resp.text()
   
   const $ = cheerio.load(body)
-  let tables = $('.col-md-12 table tbody tr')
+  let tables = $('.download-table span')
   
   // Keep only the first row that mentions Ubuntu
-  tables = tables.filter((ix, el) => /Ubuntu/.test($(el).html())).first()
+  tables = tables.filter((ix, el) => /Ubuntu 18\+/.test($(el).html())).first()
 
+  
   // Get the links under that table row
-  const links = $(tables.eq(0)).find('td a')
+  const links = $(tables.eq(0).next())
 
   // get link to file
   const href = links.eq(0).prop('href')
 
   // get sha256 checksum to be used later on
-  const sha256 = links.eq(1).data('content')
+  const sha256 = $(links).next().next().find(".tooltip p").eq(0).html().trim()
   
   log.debug('href: ', href)
   log.debug('sha256: ', sha256)
+  
+  if (href === undefined) {
+    log.info("The web scrapper couldn't find the link, aborting...")
+    return
+  }
 
   // falg to check if file needs to be downloaded
   let fileExists = false
