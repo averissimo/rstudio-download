@@ -6,9 +6,10 @@ const path = require('path')
 const log = require('loglevel')
 const execSync = require('child_process').execSync
 
-log.setLevel('debug')
+log.setLevel('info')
+// log.setLevel('debug')
 
-// download_url = "https://www.rstudio.com/products/rstudio/download/preview/"
+// download_url = "https://www.rstudio.com/products/rstudio/download/preview/" // old rstudio preview page
 download_url = "https://posit.co/download/rstudio-desktop/"
 
 const get = bent('GET', 200);
@@ -23,7 +24,6 @@ async function connect()  {
   
   // Keep only the first row that mentions Ubuntu
   tables = tables.filter((ix, el) => /Ubuntu 18\+/.test($(el).html())).first()
-
   
   // Get the links under that table row
   const links = $(tables.eq(0).next())
