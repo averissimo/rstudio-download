@@ -56,6 +56,11 @@ async function get_link_json() {
 
 async function download() {
   const url_obj = await get_link_json();
+
+  // Old version used to scrape the download page, but it was deprecated in favor
+  //  of using: https://www.rstudio.com/wp-content/downloads.json
+  // The code/logic was kept in case this is removed
+
   // const url_obj = await get_link_scrapper();
 
   const href = url_obj.url;
@@ -124,7 +129,7 @@ async function download() {
   // outputs the file name
   // log.info(path.join(baseDir, filename))
   log.info()
-  log.info('Installing debian package, please insert password when asked')
+  log.info('Installing debian package, please insert password when asked (or don\'t and install it manually)')
   const cmd = 'sudo dpkg -i -G -E ' + filename
   log.info()
   log.info(cmd)
