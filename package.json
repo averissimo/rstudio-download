@@ -10,9 +10,9 @@
   "author": "André Veríssimo",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "bent": "^7.3.1",
+    "bent": "^7.3.12",
     "cheerio": "^1.0.0-rc.12",
-    "loglevel": "^1.8.0"
+    "loglevel": "^1.8.1"
   },
   "xo": {
     "space": true,
