@@ -6,8 +6,9 @@ const path = require('path')
 const log = require('loglevel')
 const execSync = require('child_process').execSync
 
-log.setLevel('info')
-// log.setLevel('debug')
+const opts = require('./config.json');
+
+log.setLevel(opts.log_level ? opts.log_level : "info");
 
 const get = bent('GET', 200);
 const down = bent('GET', 'buffer', 200);
@@ -45,7 +46,11 @@ async function get_link_json() {
   url = "https://www.rstudio.com/wp-content/downloads.json";
   const resp = await get(url);
   const body = await resp.json();
-  const installers = body.rstudio.open_source.preview.desktop.installer;
+
+  const tag = opts.preview ? "preview" : "stable";
+  const installers = body.rstudio.open_source[tag].desktop.installer;
+
+  log.debug("tag:", tag);
 
   const target = Object.values(installers).filter(el => {
     return el.platform.name.match(/Ubuntu/);
@@ -65,6 +70,9 @@ async function download() {
 
   const href = url_obj.url;
   const sha256 = url_obj.sha256;
+
+  log.debug("  href:", href);
+  log.debug("sha256:", sha256);
 
   // Actual download of deb
 
