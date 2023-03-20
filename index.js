@@ -9,22 +9,23 @@ const execSync = require('child_process').execSync
 log.setLevel('info')
 // log.setLevel('debug')
 
-// download_url = "https://www.rstudio.com/products/rstudio/download/preview/" // old rstudio preview page
-download_url = "https://posit.co/download/rstudio-desktop/"
-
 const get = bent('GET', 200);
 const down = bent('GET', 'buffer', 200);
 
-async function connect()  {
+async function get_link_scrapper() {
+
+  // download_url = "https://www.rstudio.com/products/rstudio/download/preview/" // old rstudio preview page
+  download_url = "https://posit.co/download/rstudio-desktop/"
+
   const resp = await get(download_url)
   const body = await resp.text()
-  
+
   const $ = cheerio.load(body)
   let tables = $('.download-table span')
-  
+
   // Keep only the first row that mentions Ubuntu
   tables = tables.filter((ix, el) => /Ubuntu 22/.test($(el).html())).first()
-  
+
   // Get the links under that table row
   const links = $(tables.eq(0).next())
 
@@ -33,10 +34,35 @@ async function connect()  {
 
   // get sha256 checksum to be used later on
   const sha256 = $(links).next().next().find(".tooltip p").eq(0).html().trim()
-  
-  log.debug('href: ', href)
-  log.debug('sha256: ', sha256)
-  
+
+  return {
+    url: href,
+    sha256,
+  }
+}
+
+async function get_link_json() {
+  url = "https://www.rstudio.com/wp-content/downloads.json";
+  const resp = await get(url);
+  const body = await resp.json();
+  const installers = body.rstudio.open_source.preview.desktop.installer;
+
+  const target = Object.values(installers).filter(el => {
+    return el.platform.name.match(/Ubuntu/);
+  }).at(-1);
+
+  return target;
+}
+
+async function download() {
+  const url_obj = await get_link_json();
+  // const url_obj = await get_link_scrapper();
+
+  const href = url_obj.url;
+  const sha256 = url_obj.sha256;
+
+  // Actual download of deb
+
   if (href === undefined) {
     log.info("The web scrapper couldn't find the link, aborting...")
     return
@@ -81,7 +107,7 @@ async function connect()  {
 
     // this is for debug, using a cached file
     // const content = fs.readFileSync(path.join(baseDir, 'rstudio-1.3.958-amd64.deb'))
-    
+
     // calculate checksum to compare against value from ite
     const fileSha256 = crypto.createHash("sha256").update(content).digest("hex")
 
@@ -105,5 +131,4 @@ async function connect()  {
   execSync(cmd, options = {stdio: 'inherit'});
 }
 
-
-connect()
+download()
